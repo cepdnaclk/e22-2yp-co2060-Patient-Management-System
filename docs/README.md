@@ -3,7 +3,7 @@ layout: home
 permalink: index.html
 
 # Please update this with your repository name and project title
-repository-name: eYY-co2060-project-template
+repository-name: e22-co2060-project-template
 title: Project Template
 ---
 
