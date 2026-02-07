@@ -19,14 +19,15 @@ If your followed all the given instructions correctly, your repository will be a
 
 A HTML template integrated with the given GitHub repository templates, based on github.com/cepdnaclk/eYY-project-theme . If you like to remove this default theme and make your own web page, you can remove the file, docs/_config.yml and create the site using HTML. -->
 
-# Project Title
+# Patient Management System
 
 ---
 
 ## Team
--  eNumber, Name, [email](mailto:name@email.com)
--  eNumber, Name, [email](mailto:name@email.com)
--  eNumber, Name, [email](mailto:name@email.com)
+-  E/22/364, S.M.L.E Senadhipathi, [email](e22364@eng.pdn.ac.lk)
+-  E/22/125, D.D.S.K.Gunawardhana, [email](e22125@eng.pdn.ac.lk)
+-  E/22/159, G.K.M JAYANGA, [email](e22159@eng.pdn.ac.lk)
+-  e/22/004, D.D ABEYSINGHE, [email](e22004@eng.pdn.ac.lk)
 
 <!-- Image (photo/drawing of the final hardware) should be here -->
 
@@ -65,8 +66,8 @@ What was achieved, future developments, commercialization plans
 
 ## Links
 
-- [Project Repository](https://github.com/cepdnaclk/{{ page.repository-name }}){:target="_blank"}
-- [Project Page](https://cepdnaclk.github.io/{{ page.repository-name}}){:target="_blank"}
+- [Project Repository](https://github.com/cepdnaclk/e22-2yp-co2060-Patient-Management-System)
+- [Project Page](https://cepdnaclk.github.io/e22-2yp-co2060-Patient-Management-System/)
 - [Department of Computer Engineering](http://www.ce.pdn.ac.lk/)
 - [University of Peradeniya](https://eng.pdn.ac.lk/)
 
