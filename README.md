@@ -1,9 +1,4 @@
 ---
-
-repository-name: e22-co2060-project-template
-title: Patient Management System
----
-
 # Patient Management System
 
 ---
