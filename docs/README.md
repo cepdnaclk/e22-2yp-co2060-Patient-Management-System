@@ -173,6 +173,6 @@ At the current stage, system requirements and high-level designs have been clear
 
 ## Links
 - [Project Repository](https://github.com/cepdnaclk/e22-2yp-co2060-Patient-Management-System)
-- [Project Page](https://cepdnaclk.github.io/e22-2yp-co2060-Patient-Management-System/)
+- [Project Page](https://cepdnaclk.github.io/e22-co2060-Patient-Management-System/)
 - [Department of Computer Engineering](http://www.ce.pdn.ac.lk/)
 - [University of Peradeniya](https://eng.pdn.ac.lk/)
