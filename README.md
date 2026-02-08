@@ -56,7 +56,7 @@ This system improves data accuracy, reduces manual work, and supports better dec
 
 ## Software Designs
 
-###1. System Modules
+##1. System Modules
 
 #### 1.1 Patient Management Module
 - Create, update, and search patient records
