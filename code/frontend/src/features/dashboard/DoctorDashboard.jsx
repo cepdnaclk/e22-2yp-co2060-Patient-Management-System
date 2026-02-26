@@ -3,6 +3,9 @@ import Dashboard from "./DoctorDashboardComponents/Dashboard";
 import PaitentList from "./DoctorDashboardComponents/Paitent";
 import Pharmacy from "./DoctorDashboardComponents/Pharmacy";
 import ReportAndAnalytics from "./DoctorDashboardComponents/ReportAndAnlytics";
+import Profile from "./DoctorDashboardComponents/Profile";
+import Records from "./DoctorDashboardComponents/Records";
+import LabReports from "./DoctorDashboardComponents/labreport";
 
 const DoctorDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -116,7 +119,7 @@ const DoctorDashboard = () => {
                       href="javascript:void(0)"
                       onClick={(e) => {
                         e.preventDefault();
-                        setSection("patientList");
+                        setSection("profile");
                       }}
                       class="menu-item text-slate-800 text-[15px] font-medium flex items-center cursor-pointer hover:bg-[#F0F8FF] rounded-md px-3 py-3 transition-all duration-300"
                     >
@@ -149,37 +152,16 @@ const DoctorDashboard = () => {
                           data-original="#000000"
                         />
                       </svg>
-                      <span>Patients</span>
+                      <span>Profile</span>
                     </a>
                   </li>
                   <li>
                     <a
                       href="javascript:void(0)"
-                      class="menu-item text-slate-800 text-[15px] font-medium flex items-center cursor-pointer hover:bg-[#F0F8FF] rounded-md px-3 py-3 transition-all duration-300"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        class="w-[18px] h-[18px] mr-3"
-                        viewBox="0 0 64 64"
-                      >
-                        <path
-                          d="M16.4 29.594a2.08 2.08 0 0 1 2.08-2.08h31.2a2.08 2.08 0 1 1 0 4.16h-31.2a2.08 2.08 0 0 1-2.08-2.08zm0 12.48a2.08 2.08 0 0 1 2.08-2.08h12.48a2.08 2.08 0 1 1 0 4.16H18.48a2.08 2.08 0 0 1-2.08-2.08z"
-                          data-original="#000000"
-                        />
-                        <path
-                          fill-rule="evenodd"
-                          d="M.8 18.154c0-8.041 6.519-14.56 14.56-14.56v-1.04a2.08 2.08 0 1 1 4.16 0v1.04h10.4v-1.04a2.08 2.08 0 1 1 4.16 0v1.04h10.4v-1.04a2.08 2.08 0 1 1 4.16 0v1.04c8.041 0 14.56 6.519 14.56 14.56v30.16c0 8.041-6.519 14.56-14.56 14.56H15.36C7.319 62.874.8 56.355.8 48.314zm33.28-10.4h10.4v1.04a2.08 2.08 0 1 0 4.16 0v-1.04c5.744 0 10.4 4.656 10.4 10.4v30.16c0 5.744-4.656 10.4-10.4 10.4H15.36c-5.744 0-10.4-4.656-10.4-10.4v-30.16c0-5.744 4.656-10.4 10.4-10.4v1.04a2.08 2.08 0 1 0 4.16 0v-1.04h10.4v1.04a2.08 2.08 0 1 0 4.16 0z"
-                          clip-rule="evenodd"
-                          data-original="#000000"
-                        />
-                      </svg>
-                      <span>Appointments</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="javascript:void(0)"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setSection("records");
+                      }}
                       class="menu-item text-slate-800 text-[15px] font-medium flex items-center cursor-pointer hover:bg-[#F0F8FF] rounded-md px-3 py-3 transition-all duration-300"
                     >
                       <svg
@@ -213,32 +195,7 @@ const DoctorDashboard = () => {
                           />
                         </g>
                       </svg>
-                      <span>Doctors & Staff</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="javascript:void(0)"
-                      class="menu-item text-slate-800 text-[15px] font-medium flex items-center cursor-pointer hover:bg-[#F0F8FF] rounded-md px-3 py-3 transition-all duration-300"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        class="w-[18px] h-[18px] mr-3"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M17.933.899C16.973.82 15.78.82 14.258.82H9.742c-1.522 0-2.716 0-3.675.078-.977.08-1.784.245-2.514.618a6.382 6.382 0 0 0-2.79 2.79C.391 5.036.226 5.843.146 6.82c-.079.96-.079 2.154-.079 3.676v4.73a5.02 5.02 0 0 0 5.02 5.02h.667a.39.39 0 0 1 .363.535c-.763 1.905 1.432 3.627 3.101 2.435l2.899-2.07.055-.039a4.717 4.717 0 0 1 2.686-.861h.84c1.719 0 2.767 0 3.648-.258a6.382 6.382 0 0 0 4.329-4.329c.257-.881.257-1.929.257-3.648v-1.515c0-1.522 0-2.717-.077-3.676-.081-.976-.246-1.783-.618-2.514a6.382 6.382 0 0 0-2.79-2.79C19.717 1.145 18.91.98 17.933.9zM4.309 3c.456-.233 1.02-.37 1.893-.44.884-.073 2.01-.074 3.578-.074h4.44c1.568 0 2.694 0 3.578.073.873.071 1.437.209 1.894.44a4.717 4.717 0 0 1 2.062 2.063c.233.456.37 1.02.44 1.894.072.883.073 2.009.073 3.577v1.315c0 1.933-.008 2.721-.19 3.343a4.717 4.717 0 0 1-3.2 3.199c-.621.182-1.41.19-3.343.19h-.687a6.382 6.382 0 0 0-3.635 1.166l-2.96 2.115c-.318.226-.734-.1-.589-.462a2.055 2.055 0 0 0-1.909-2.818h-.667a3.354 3.354 0 0 1-3.355-3.354v-4.695c0-1.568 0-2.694.074-3.577.07-.874.208-1.438.44-1.894A4.717 4.717 0 0 1 4.31 3z"
-                          clip-rule="evenodd"
-                          data-original="#000000"
-                        />
-                        <path
-                          d="M8.67 10.533a1.11 1.11 0 1 1-2.22 0 1.11 1.11 0 0 1 2.22 0zm4.44 0a1.11 1.11 0 1 1-2.22 0 1.11 1.11 0 0 1 2.22 0zm4.44 0a1.11 1.11 0 1 1-2.22 0 1.11 1.11 0 0 1 2.22 0z"
-                          data-original="#000000"
-                        />
-                      </svg>
-                      <span>Billing & Claims</span>
+                      <span>Records</span>
                     </a>
                   </li>
                   <li>
@@ -246,7 +203,7 @@ const DoctorDashboard = () => {
                       href="javascript:void(0)"
                       onClick={(e) => {
                         e.preventDefault();
-                        setSection("reportsandanalytics");
+                        setSection("labreports");
                       }}
                       class="menu-item text-slate-800 text-[15px] font-medium flex items-center cursor-pointer hover:bg-[#F0F8FF] rounded-md px-3 py-3 transition-all duration-300"
                     >
@@ -267,7 +224,36 @@ const DoctorDashboard = () => {
                           data-original="#000000"
                         />
                       </svg>
-                      <span>Reports & Analytics</span>
+                      <span>Lab Reports</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="javascript:void(0)"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setSection("patientList");
+                      }}
+                      class="menu-item text-slate-800 text-[15px] font-medium flex items-center cursor-pointer hover:bg-[#F0F8FF] rounded-md px-3 py-3 transition-all duration-300"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        class="w-[18px] h-[18px] mr-3"
+                        viewBox="0 0 64 64"
+                      >
+                        <path
+                          d="M16.4 29.594a2.08 2.08 0 0 1 2.08-2.08h31.2a2.08 2.08 0 1 1 0 4.16h-31.2a2.08 2.08 0 0 1-2.08-2.08zm0 12.48a2.08 2.08 0 0 1 2.08-2.08h12.48a2.08 2.08 0 1 1 0 4.16H18.48a2.08 2.08 0 0 1-2.08-2.08z"
+                          data-original="#000000"
+                        />
+                        <path
+                          fill-rule="evenodd"
+                          d="M.8 18.154c0-8.041 6.519-14.56 14.56-14.56v-1.04a2.08 2.08 0 1 1 4.16 0v1.04h10.4v-1.04a2.08 2.08 0 1 1 4.16 0v1.04h10.4v-1.04a2.08 2.08 0 1 1 4.16 0v1.04c8.041 0 14.56 6.519 14.56 14.56v30.16c0 8.041-6.519 14.56-14.56 14.56H15.36C7.319 62.874.8 56.355.8 48.314zm33.28-10.4h10.4v1.04a2.08 2.08 0 1 0 4.16 0v-1.04c5.744 0 10.4 4.656 10.4 10.4v30.16c0 5.744-4.656 10.4-10.4 10.4H15.36c-5.744 0-10.4-4.656-10.4-10.4v-30.16c0-5.744 4.656-10.4 10.4-10.4v1.04a2.08 2.08 0 1 0 4.16 0v-1.04h10.4v1.04a2.08 2.08 0 1 0 4.16 0z"
+                          clip-rule="evenodd"
+                          data-original="#000000"
+                        />
+                      </svg>
+                      <span>Patients</span>
                     </a>
                   </li>
                   <li>
@@ -723,6 +709,9 @@ const DoctorDashboard = () => {
             )}
             {section === "pharmacy" && <Pharmacy />}
             {section === "reportsandanalytics" && <ReportAndAnalytics />}
+            {section === "profile" && <Profile />}
+            {section === "records" && <Records />}
+            {section === "labreports" && <LabReports />}
           </section>
         </div>
       </div>
