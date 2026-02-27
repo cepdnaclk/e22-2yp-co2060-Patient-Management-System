@@ -65,7 +65,6 @@ const DoctorDashboard = () => {
 
   return (
     <div>
-      <h1>This is Doctor Dash board</h1>
       <div className="relative bg-[#f7f6f9] h-full min-h-screen">
         <div className="flex items-start">
           <nav id="sidebar" className="lg:min-w-67.5 w-max max-lg:min-w-8">
