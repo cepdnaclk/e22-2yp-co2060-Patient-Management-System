@@ -2,14 +2,20 @@ package com.pms.backend.auth.controller;
 
 
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.pms.backend.auth.dto.AuthResponse;
 import com.pms.backend.auth.dto.LoginRequest;
 import com.pms.backend.auth.dto.SignupRequest;
 import com.pms.backend.auth.service.AuthService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 // @RestController = @Controller + @ResponseBody
@@ -20,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5174")
 
 public class AuthController {
 
