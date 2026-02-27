@@ -47,13 +47,15 @@ export default function Signup() {
       // Handle successful signup
       console.log(response.data);
       saveLogin(response.data.token, response.data.user);
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       // Handle signup error
-      console.error(
-        "Signup failed:",
-        error.response ? error.response.data : error.message,
-      );
+      console.error("Signup failed:", error);
+
+      // FIX: Extract the specific string message, or use a fallback string
+      const errorMessage =
+        error.response?.data?.message || "Signup failed. Please try again.";
+      setError(errorMessage);
       setError(error.response ? error.response.data : error.message);
     }
   };

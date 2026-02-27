@@ -11,7 +11,7 @@ const DoctorDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newMenuLabel, setNewMenuLabel] = useState("");
   const [customMenus, setCustomMenus] = useState([]);
-
+  const [section, setSection] = useState("dashboard");
   const addMenu = (e) => {
     e.preventDefault();
     const label = newMenuLabel.trim();
@@ -20,8 +20,6 @@ const DoctorDashboard = () => {
     setNewMenuLabel("");
     setIsModalOpen(false);
   };
-
-  useState("dashboard");
 
   useEffect(() => {
     const dropdownToggle = document.getElementById("dropdownToggle");
@@ -82,7 +80,7 @@ const DoctorDashboard = () => {
                       href="javascript:void(0)"
                       onClick={(e) => {
                         e.preventDefault();
-                        setSection("dashboard");
+                        setSection("/dashboard");
                       }}
                       class="menu-item text-green-800 text-[15px] font-medium flex items-center cursor-pointer bg-[#F0F8FF] hover:bg-[#F0F8FF] rounded-md px-3 py-3 transition-all duration-300"
                     >
@@ -739,7 +737,7 @@ const DoctorDashboard = () => {
               <PaitentList />
             )}
             {section === "pharmacy" && <Pharmacy />}
-            // eslint-disable-next-line no-undef
+
             {section === "reportsandanalytics" && <ReportAndAnalytics />}
             {section === "profile" && <Profile />}
             {section === "records" && <Records />}
