@@ -34,7 +34,7 @@ export default function Signup() {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/api/auth/signup",
+        "http://localhost:8082/api/auth/signup",
         {
           firstName,
           lastName,
@@ -47,14 +47,15 @@ export default function Signup() {
       // Handle successful signup
       console.log(response.data);
       saveLogin(response.data.token, response.data.user);
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       // Handle signup error
       console.error(
         "Signup failed:",
         error.response ? error.response.data : error.message,
       );
-      setError(error.response ? error.response.data : error.message);
+      const errorMessage = err.response?.data?.message || "An error occurred";
+      setError(errorMessage);
     }
   };
 
