@@ -5,6 +5,7 @@ import Home from "./pages/Home.jsx";
 import DoctorDashboard from "./features/dashboard/DoctorDashboard.jsx";
 import PatientDashboard from "./features/dashboard/PatientDashboard.jsx";
 import { Routes, Route } from "react-router-dom";
+
 import { ProtectedRoute } from "./features/auth/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
 
@@ -46,6 +47,9 @@ function App() {
         />
       </Routes>
     </>
+
+
+
   );
 }
 

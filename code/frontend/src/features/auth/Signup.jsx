@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "./AuthContext";
 
 export default function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -9,22 +8,14 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [mobile, setMobileNumber] = useState("");
   const [error, setError] = useState(""); // State to manage error messages
-  const navigate = useNavigate();
-  const { saveLogin } = useAuth();
+  const history = useNavigate();
 
   const handleSignup = async () => {
     try {
       // Check for empty fields
-      if (
-        !firstName ||
-        !lastName ||
-        !email ||
-        !password ||
-        !confirmPassword ||
-        !mobileNumber
-      ) {
+      if (!fullName || !email || !password || !confirmPassword || !mobile) {
         setError("Please fill in all fields.");
         return;
       }
@@ -33,21 +24,18 @@ export default function Signup() {
         throw new Error("Passwords do not match");
       }
 
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/signup",
-        {
-          firstName,
-          lastName,
-          email,
-          password,
-
-          mobileNumber,
-        },
-      );
+      const response = await axios.post("http://localhost:8081/auth/signup", {
+        fullName,
+        email,
+        password,
+        role,
+        mobile,
+      });
       // Handle successful signup
       console.log(response.data);
       saveLogin(response.data.token, response.data.user);
       navigate("/");
+
     } catch (error) {
       // Handle signup error
       console.error("Signup failed:", error);
@@ -70,13 +58,7 @@ export default function Signup() {
       </div>
 
       <div className="mx-4 mb-4 -mt-20">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSignup();
-          }}
-          className="max-w-4xl max-md:max-w-xl mx-auto bg-white [box-shadow:0_2px_13px_-6px_rgba(0,0,0,0.4)] sm:p-8 p-4 rounded-md"
-        >
+        <form className="max-w-4xl max-md:max-w-xl mx-auto bg-white [box-shadow:0_2px_13px_-6px_rgba(0,0,0,0.4)] sm:p-8 p-4 rounded-md">
           <div className="grid md:grid-cols-1">
             <button
               type="button"
@@ -147,7 +129,7 @@ export default function Signup() {
                 className="bg-slate-100 focus:bg-transparent w-full text-sm text-slate-900 px-4 py-2.5 rounded-sm border border-gray-200 focus:border-blue-600 outline-0 transition-all"
                 placeholder="Mobile Number"
                 id="mobileNumber"
-                value={mobileNumber}
+                value={mobile}
                 type="text"
                 onChange={(e) => setMobileNumber(e.target.value)}
               />
@@ -183,9 +165,8 @@ export default function Signup() {
           </div>
           <div className="mt-8">
             <button
+              type="button"
               className="w-full py-2.5 px-5 text-sm font-medium tracking-wider rounded-sm cursor-pointer text-white bg-blue-600 hover:bg-blue-700 focus:outline-0"
-              onClick={handleSignup}
-              type="submit"
             >
               Sign up
             </button>
