@@ -21,4 +21,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // existsByEmail → SELECT COUNT(*) > 0 FROM users WHERE email = ?
     boolean existsByEmail(String email);
     // Used in signup to check if email is already taken.
+    boolean existsByMobileNumber(String mobileNumber);
 }

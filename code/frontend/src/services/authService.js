@@ -25,21 +25,21 @@ export const authService = {
 
   // Save to localStorage after successful login/signup
   saveSession: (token, user) => {
-    localStorage.setItem("prms_token", token);
-    localStorage.setItem("prms_user", JSON.stringify(user));
+    localStorage.setItem("pms_token", token);
+    localStorage.setItem("pms_user", JSON.stringify(user));
   },
 
   // Remove everything on logout
   clearSession: () => {
-    localStorage.removeItem("prms_token");
-    localStorage.removeItem("prms_user");
+    localStorage.removeItem("pms_token");
+    localStorage.removeItem("pms_user");
   },
 
   // Get current user from localStorage (survives page refresh)
   getCurrentUser: () => {
-    const raw = localStorage.getItem("prms_user");
+    const raw = localStorage.getItem("pms_user");
     return raw ? JSON.parse(raw) : null;
   },
 
-  isLoggedIn: () => !!localStorage.getItem("prms_token"),
+  isLoggedIn: () => !!localStorage.getItem("pms_token"),
 };
