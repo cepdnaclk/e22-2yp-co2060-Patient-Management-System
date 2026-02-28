@@ -13,7 +13,7 @@ const api = axios.create({
 // Runs automatically before EVERY outgoing request.
 // Reads the JWT from localStorage and adds it to the header.
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("prms_token");
+  const token = localStorage.getItem("pms_token");
   if (token) {
     config.headers["Authorization"] = "Bearer " + token;
   }
@@ -26,9 +26,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("prms_token");
-      localStorage.removeItem("prms_user");
+    if (
+      error.response?.status === 401 &&
+      !error.config.url.includes("/api/auth/login")
+    ) {
+      localStorage.removeItem("pms_token");
+      localStorage.removeItem("pms_user");
       window.location.href = "/login";
     }
     return Promise.reject(error);

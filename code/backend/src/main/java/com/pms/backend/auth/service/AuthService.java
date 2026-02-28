@@ -29,6 +29,11 @@ public class AuthService {
             throw AppException.conflict("This email is already registered");
         }
 
+
+        if (userRepo.existsByMobileNumber(req.getMobileNumber())) {
+            throw AppException.conflict("This mobile number is already registered");
+        }
+
         // 2. Build the user
         User.UserBuilder builder = User.builder();
         builder.firstName(req.getFirstName());
@@ -38,12 +43,7 @@ public class AuthService {
         builder.passwordHash(passwordEncoder.encode(req.getPassword()));
         builder.role(Role.PATIENT);
         builder.isActive(true);
-     // passwordEncoder.encode():
-//   Input:  "mypassword123"
-//   Output: "$2a$10$xG9z3K..." (different every call, even same input)
-//   This is stored in DB — never the plain text
-// ALWAYS PATIENT for self-signup.
-// Even if req had a role field, we ignore it and hardcode PATIENT here.
+
         User user = builder.build();
 
         // 3. Save to database

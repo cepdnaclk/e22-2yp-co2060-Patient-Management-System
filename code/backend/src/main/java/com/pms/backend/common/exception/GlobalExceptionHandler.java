@@ -1,5 +1,7 @@
 package com.pms.backend.common.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,7 +21,23 @@ public class GlobalExceptionHandler {
                 .status(ex.getStatus())
                 .body(Map.of("message", ex.getMessage()));
     }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrity(
+            DataIntegrityViolationException ex) {
 
+        String message = "A record with this information already exists.";
+        String detail = ex.getMessage();
+
+        if (detail != null && detail.contains("email")) {
+            message = "This email is already registered.";
+        } else if (detail != null && detail.contains("mobilenumber")) {
+            message = "This mobile number is already registered.";
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("message", message));
+    }
     // Catches @Valid validation failures
     // Example: email is blank, password too short
     @ExceptionHandler(MethodArgumentNotValidException.class)
