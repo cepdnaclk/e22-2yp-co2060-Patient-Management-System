@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { patientRecordService } from '../../../services/patientRecordService';
+import New_Prescription from './Pharmacy';
 // import { 
 //   FaUser, FaPhone, FaEnvelope, FaCalendarAlt, 
 //   FaPrescriptionBottleMedical, FaFlask, FaEdit, 
@@ -6,38 +8,9 @@ import React, { useState } from 'react';
 // } from 'react-icons/fa';
 
 const PatientProfile = () => {
-  const patients = [
-    {
-      id: "PMS-00421",
-      name: "Rajesh Kumar",
-      age: 52,
-      gender: "Male",
-      bloodGroup: "B+",
-      admittedDate: "20 February 2026",
-      primaryDoctor: "Dr. A. Perera",
-      avatar: "https://i.pravatar.cc/160?u=rajeshkumar",
-    },
-    {
-      id: "PMS-00456",
-      name: "Nimali Perera",
-      age: 44,
-      gender: "Female",
-      bloodGroup: "A+",
-      admittedDate: "11 January 2026",
-      primaryDoctor: "Dr. S. Fernando",
-      avatar: "https://i.pravatar.cc/160?u=nimaliperera",
-    },
-    {
-      id: "PMS-00502",
-      name: "Kasun Silva",
-      age: 61,
-      gender: "Male",
-      bloodGroup: "O-",
-      admittedDate: "03 March 2026",
-      primaryDoctor: "Dr. A. Perera",
-      avatar: "https://i.pravatar.cc/160?u=kasunsilva",
-    },
-  ];
+  const [patients, setPatients] = useState([]);
+  const [loadingPatients, setLoadingPatients] = useState(true);
+  const [loadingRecords, setLoadingRecords] = useState(false);
 
   const [searchText, setSearchText] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -46,27 +19,11 @@ const PatientProfile = () => {
   const [historyRecords, setHistoryRecords] = useState([
     {
       id: 1,
-      date: "23 Feb 2026",
-      type: "Diagnosis",
-      title: "Type 2 Diabetes Mellitus",
-      description: "HbA1c 6.8% (improved from 7.9%). Stable on current medication.",
-      doctor: "Dr. A. Perera"
-    },
-    {
-      id: 2,
-      date: "20 Feb 2026",
-      type: "Admission Note",
-      title: "Routine Follow-up",
-      description: "Admitted for annual diabetes review. No acute complaints.",
-      doctor: "Dr. A. Perera"
-    },
-    {
-      id: 3,
-      date: "15 Feb 2026",
-      type: "Lab Result",
-      title: "CBC + Fasting Blood Sugar",
-      description: "FBS 112 mg/dL. All other parameters within normal limits.",
-      doctor: "Lab Department"
+      date: "N/A",
+      type: "Record",
+      title: "No record selected",
+      description: "Search and select a patient to load medical records.",
+      doctor: "System"
     }
   ]);
 
@@ -115,7 +72,8 @@ const PatientProfile = () => {
 
     const found = patients.find(
       (patient) =>
-        patient.id.toLowerCase() === query ||
+        String(patient.id).toLowerCase() === query ||
+        patient.displayId.toLowerCase() === query ||
         patient.name.toLowerCase().includes(query),
     );
 
@@ -126,20 +84,91 @@ const PatientProfile = () => {
     }
 
     setSearchError("");
-    setSelectedPatient(found);
+    selectPatient(found);
   };
 
-  const selectPatient = (patient) => {
-    setSearchText(patient.id);
+  const selectPatient = async (patient) => {
+    setSearchText(patient.displayId || String(patient.id));
     setSearchError("");
     setSelectedPatient(patient);
+
+    setLoadingRecords(true);
+    try {
+      const records = await patientRecordService.getPatientRecords(patient.id);
+      setHistoryRecords(
+        records.length
+          ? records
+          : [
+              {
+                id: Date.now(),
+                date: "N/A",
+                type: "Record",
+                title: "No records found",
+                description: "This patient has no medical records yet.",
+                doctor: "System",
+              },
+            ],
+      );
+    } catch (error) {
+      setHistoryRecords([
+        {
+          id: Date.now(),
+          date: "N/A",
+          type: "Error",
+          title: "Failed to load records",
+          description:
+            error.response?.data?.message || "Unable to fetch patient medical records.",
+          doctor: "System",
+        },
+      ]);
+    } finally {
+      setLoadingRecords(false);
+    }
   };
 
   const cancelSearch = () => {
     setSearchText("");
     setSearchError("");
     setSelectedPatient(null);
+    setHistoryRecords([
+      {
+        id: Date.now(),
+        date: "N/A",
+        type: "Record",
+        title: "No record selected",
+        description: "Search and select a patient to load medical records.",
+        doctor: "System",
+      },
+    ]);
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPatients = async () => {
+      setLoadingPatients(true);
+      try {
+        const data = await patientRecordService.getAllPatients();
+        if (!isMounted) return;
+        setPatients(data);
+      } catch (error) {
+        if (!isMounted) return;
+        setSearchError(
+          error.response?.data?.message || "Failed to load patients list.",
+        );
+      } finally {
+        if (isMounted) {
+          setLoadingPatients(false);
+        }
+      }
+    };
+
+    loadPatients();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredHistoryRecords = historyRecords.filter((record) => {
     if (activeRecordsTab === "all") return true;
@@ -163,7 +192,7 @@ const PatientProfile = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") searchPatient();
             }}
-            placeholder="Enter Patient ID (e.g. PMS-00421) or Name"
+            placeholder="Enter Patient ID (e.g. PMS-00001) or Name"
             className="md:col-span-3 bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm"
           />
           <button
@@ -189,7 +218,12 @@ const PatientProfile = () => {
               Patient List
             </div>
             <div className="divide-y divide-slate-200">
-              {patients.map((patient) => (
+              {loadingPatients ? (
+                <p className="px-4 py-3 text-sm text-slate-500">Loading patients...</p>
+              ) : patients.length === 0 ? (
+                <p className="px-4 py-3 text-sm text-slate-500">No patients found.</p>
+              ) : (
+                patients.map((patient) => (
                 <button
                   key={patient.id}
                   type="button"
@@ -197,9 +231,9 @@ const PatientProfile = () => {
                   className="w-full text-left px-4 py-3 hover:bg-slate-50 transition"
                 >
                   <p className="text-sm font-medium text-slate-800">{patient.name}</p>
-                  <p className="text-xs text-slate-500">{patient.id}</p>
+                  <p className="text-xs text-slate-500">{patient.displayId}</p>
                 </button>
-              ))}
+              )))}
             </div>
           </div>
         )}
@@ -228,7 +262,7 @@ const PatientProfile = () => {
             </span>
           </div>
           <p className="text-2xl mt-2 opacity-90">
-            {selectedPatient.id} • {selectedPatient.age} years • {selectedPatient.gender} • {selectedPatient.bloodGroup}
+            {selectedPatient.displayId} • {selectedPatient.age} years • {selectedPatient.gender} • {selectedPatient.bloodGroup}
           </p>
           <p className="mt-3 text-lg opacity-75">
             Admitted: {selectedPatient.admittedDate} • Primary Doctor: {selectedPatient.primaryDoctor}
@@ -372,6 +406,7 @@ const PatientProfile = () => {
                 />
                 <button 
                   onClick={addNewRecord}
+                  disabled={!selectedPatient || loadingRecords}
                   className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-medium flex items-center justify-center gap-2 active:scale-95 transition"
                 >
                   {/* <FaPlus /> */} Add Record
@@ -387,7 +422,10 @@ const PatientProfile = () => {
 
             {/* Scrollable Records List */}
             <div className="max-h-[460px] overflow-y-auto pr-2 custom-scroll space-y-4">
-              {filteredHistoryRecords.map((record) => (
+              {loadingRecords && (
+                <p className="text-sm text-slate-500">Loading records...</p>
+              )}
+              {!loadingRecords && filteredHistoryRecords.map((record) => (
                 <div key={record.id} className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-blue-200 transition group">
                   <div className="flex justify-between items-start">
                     <div>
@@ -416,10 +454,13 @@ const PatientProfile = () => {
               </p>
             )}
           </div>
+          <New_Prescription />
         </div>
 
+        
+
         {/* Right Sidebar - Quick Actions (same as before) */}
-        <div className="lg:col-span-4 space-y-8">
+        <div className="lg:col-span-4 space-y-8 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-2">
           <div className="bg-white rounded-3xl shadow p-8">
             <h2 className="text-xl font-semibold mb-6">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-4">
@@ -472,6 +513,7 @@ const PatientProfile = () => {
       </div>
     </>
       )}
+    
     </div>
   );
 };

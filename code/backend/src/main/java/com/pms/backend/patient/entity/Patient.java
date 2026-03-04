@@ -1,14 +1,24 @@
 package com.pms.backend.patient.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.pms.backend.user.entity.User;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "patients")
@@ -35,10 +45,58 @@ public class Patient {
     private String bloodType;
 
     @Column
+    private String bloodPressure;
+
+    @Column
+    private Integer heartRate;
+
+    @Column
+    private Double temperature;
+
+    @Column
+    private Double oxygenSaturation;
+
+    @Column
+    private Integer respiratoryRate;
+
+    @Column
+    private Double height;
+
+    @Column
+    private Double weight;
+
+    @Column
+    private LocalDateTime lastVitalsUpdate;
+
+    @Column
+    private String patientId;
+
+    @Column
+    private String primaryDoctor;
+
+    @Column
+    private LocalDateTime admissionDate;
+
+    @Column(length = 1000)
+    private String admissionReason;
+
+    @Column
+    private String admissionStatus;
+
+    @Column
+    private LocalDateTime dischargeDate;
+
+    @Column(length = 1000)
+    private String address;
+
+    @Column
     private String emergencyContactName;
 
     @Column
     private String emergencyContactPhone;
+
+    @Column
+    private String emergencyContactRelation;
 
     @Column(length = 1000)
     private String medicalHistory;
