@@ -68,7 +68,8 @@ const formatPatient = (patient) => ({
         })
       : "N/A",
   primaryDoctor: patient.primaryDoctor || "Assigned Doctor",
-  avatar: 'https://www.silcharmunicipality.in/wp-content/uploads/2021/02/male-face.jpg', //`https://i.pravatar.cc/160?u=patient-${patient.id}`,
+  
+  avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent((patient.firstName || 'P') + '+' + (patient.lastName || 'M'))}&background=random&size=160&bold=true`,
   allergies: patient.allergies || "None",
   bloodPressure: patient.bloodPressure || "N/A",
   heartRate: patient.heartRate ?? null,

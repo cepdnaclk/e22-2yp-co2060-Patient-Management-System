@@ -20,7 +20,7 @@ const ROLE_ROUTES = {
   ADMIN: "/dashboard/admin",
   MANAGEMENT: "/dashboard/management",
   DOCTOR: "/dashboard/doctor",
-  NURSE: "/dashboard/doctor",
+  NURSE: "/dashboard/nurse",
   RECEPTIONIST: "/dashboard/receptionist",
   BILLING_STAFF: "/dashboard/billingstaff",
   PHARMACIST: "/dashboard/pharmacist",

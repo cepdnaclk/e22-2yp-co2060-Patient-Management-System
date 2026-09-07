@@ -1,6 +1,3 @@
-import React from "react";
-import { Search, Filter, AlertTriangle } from "lucide-react";
-
 import React, { useState } from "react";
 import { Search, Filter, AlertTriangle, Loader2 } from "lucide-react";
 

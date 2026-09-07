@@ -62,6 +62,9 @@ api.interceptors.response.use(
 
       if (isRefreshing) {
         // Another refresh is already in progress — queue this request
+        // BUG FIX: Original code had `.catch(reject)` but `reject` was scoped inside
+        // the Promise constructor callback and NOT accessible in the .then()/.catch() chain.
+        // See: docs/learning/03-error-handling-promises.md
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -69,7 +72,7 @@ api.interceptors.response.use(
             originalRequest.headers["Authorization"] = "Bearer " + token;
             return api(originalRequest);
           })
-          .catch(reject);
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
