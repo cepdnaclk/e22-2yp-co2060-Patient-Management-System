@@ -36,7 +36,7 @@ const NavbarLanding = () => {
       SUPER_ADMIN: "/dashboard/admin",
       ADMIN: "/dashboard/admin",
       DOCTOR: "/dashboard/doctor",
-      NURSE: "/dashboard/doctor",
+      NURSE: "/dashboard/nurse",
       PATIENT: "/dashboard/patient",
       RECEPTIONIST: "/dashboard/receptionist",
       PHARMACIST: "/dashboard/pharmacist",

@@ -2,7 +2,17 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext.jsx";
 import { authService } from "../../services/authService";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Activity, ShieldCheck, Users, Clock } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Activity,
+  ShieldCheck,
+  Users,
+  Clock,
+} from "lucide-react";
 
 
 const ROLE_ROUTES = {
@@ -10,7 +20,7 @@ const ROLE_ROUTES = {
   ADMIN: "/dashboard/admin",
   MANAGEMENT: "/dashboard/management",
   DOCTOR: "/dashboard/doctor",
-  NURSE: "/dashboard/doctor",
+  NURSE: "/dashboard/nurse",
   RECEPTIONIST: "/dashboard/receptionist",
   BILLING_STAFF: "/dashboard/billingstaff",
   PHARMACIST: "/dashboard/pharmacist",
@@ -59,7 +69,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
-
       {/* ── Left Panel — Branding ─────────────────────────────────── */}
       <div className="hidden lg:flex w-[45%] xl:w-[42%] flex-col bg-slate-900 dark:bg-slate-950 relative overflow-hidden">
         {/* geometric accent */}
@@ -82,15 +91,18 @@ export default function LoginPage() {
           {/* Main copy */}
           <div className="flex-1 flex flex-col justify-center">
             <div className="mb-6 inline-flex">
-              <span className="px-3 py-1 text-xs font-semibold text-blue-400 bg-blue-500/15 border border-blue-500/25 rounded-full uppercase tracking-wider">
-                Trusted by 500+ clinicians
-              </span>
+              <span className="px-3 py-1 text-xs font-semibold text-blue-400 bg-blue-500/15 border border-blue-500/25 rounded-full uppercase tracking-wider"></span>
             </div>
             <h2 className="text-4xl xl:text-5xl font-black text-white tracking-tighter leading-[1.08] mb-5">
-              Your patients,<br />always in safe<br />hands.
+              Your patients,
+              <br />
+              always in safe
+              <br />
+              hands.
             </h2>
             <p className="text-slate-400 text-base leading-relaxed max-w-sm mb-10">
-              Access your secure healthcare portal and manage patient records with confidence.
+              Access your secure healthcare portal and manage patient records
+              with confidence.
             </p>
 
             <div className="space-y-3.5">
@@ -110,7 +122,9 @@ export default function LoginPage() {
             <p className="text-slate-500 text-sm italic leading-relaxed">
               "PatientMS cut our admin time in half. It's now indispensable."
             </p>
-            <p className="text-slate-600 text-xs mt-2 font-medium">— Dr. Kumari Silva, Chief of Medicine</p>
+            <p className="text-slate-600 text-xs mt-2 font-medium">
+              — Dr. Kumari Silva, Chief of Medicine
+            </p>
           </div>
         </div>
       </div>
@@ -118,7 +132,6 @@ export default function LoginPage() {
       {/* ── Right Panel — Form ────────────────────────────────────── */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white dark:bg-slate-950">
         <div className="w-full max-w-[400px]">
-
           {/* Mobile logo */}
           <NavLink to="/" className="flex items-center gap-2 mb-8 lg:hidden">
             <div className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center">
@@ -148,7 +161,10 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Email address
               </label>
               <div className="relative">
@@ -160,7 +176,7 @@ export default function LoginPage() {
                   autoComplete="email"
                   placeholder="you@hospital.com"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 />
               </div>
@@ -169,10 +185,16 @@ export default function LoginPage() {
             {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-semibold text-slate-700 dark:text-slate-300"
+                >
                   Password
                 </label>
-                <a href="#" className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline underline-offset-4">
+                <a
+                  href="#"
+                  className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline underline-offset-4"
+                >
                   Forgot password?
                 </a>
               </div>
@@ -185,16 +207,20 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   placeholder="Enter your password"
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-11 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 />
                 <button
                   type="button"
                   tabIndex={-1}
-                  onClick={() => setShowPass(s => !s)}
+                  onClick={() => setShowPass((s) => !s)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                 >
-                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPass ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -225,7 +251,10 @@ export default function LoginPage() {
           <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Don't have an account?{" "}
-              <NavLink to="/signup" className="font-bold text-blue-600 dark:text-blue-400 hover:underline underline-offset-4">
+              <NavLink
+                to="/signup"
+                className="font-bold text-blue-600 dark:text-blue-400 hover:underline underline-offset-4"
+              >
                 Create one free
               </NavLink>
             </p>

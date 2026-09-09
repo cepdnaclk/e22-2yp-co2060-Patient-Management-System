@@ -2,6 +2,7 @@ package com.pms.backend.patient.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
@@ -35,12 +36,19 @@ public class PatientService {
             throw new AppException("This mobile number is already registered", HttpStatus.CONFLICT);
         }
 
+        // SECURITY FIX: Generate a random temporary password instead of using a hardcoded one.
+        // Before: passwordEncoder.encode("P@tient@123") ← Every patient got the SAME password!
+        // After:  Each patient gets a unique random password. They must use "Forgot Password"
+        //         or be given the temp password by the staff member who registered them.
+        // See: docs/learning/02-security-password-handling.md
+        String tempPassword = UUID.randomUUID().toString().substring(0, 12);
+
         User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .mobileNumber(request.getMobileNumber())
-                .passwordHash(passwordEncoder.encode("P@tient@123"))
+                .passwordHash(passwordEncoder.encode(tempPassword))
                 .role(Role.PATIENT)
                 .isActive(true)
                 .build();
@@ -122,10 +130,49 @@ public class PatientService {
                 .collect(Collectors.toList());
     }
 
+    // DATA INTEGRITY FIX: Added @Transactional and User field updates.
+    // Before: Only Patient fields were updated. User fields (name, email, phone) were silently ignored.
+    // After:  Both Patient AND User entities are updated in a single transaction.
+    // See: docs/learning/05-entity-relationships-jpa.md
+    @Transactional
     public PatientDto updatePatient(Long id, PatientDto patientDto) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new AppException("Patient not found", HttpStatus.NOT_FOUND));
 
+        // ── Update linked User fields (name, email, mobile) ──────────────
+        User user = patient.getUser();
+        boolean userChanged = false;
+
+        if (patientDto.getFirstName() != null && !patientDto.getFirstName().equals(user.getFirstName())) {
+            user.setFirstName(patientDto.getFirstName());
+            userChanged = true;
+        }
+        if (patientDto.getLastName() != null && !patientDto.getLastName().equals(user.getLastName())) {
+            user.setLastName(patientDto.getLastName());
+            userChanged = true;
+        }
+        if (patientDto.getEmail() != null && !patientDto.getEmail().equals(user.getEmail())) {
+            // Check for duplicate email before allowing change
+            if (userRepository.existsByEmail(patientDto.getEmail())) {
+                throw new AppException("This email is already registered", HttpStatus.CONFLICT);
+            }
+            user.setEmail(patientDto.getEmail());
+            userChanged = true;
+        }
+        if (patientDto.getMobileNumber() != null && !patientDto.getMobileNumber().equals(user.getMobileNumber())) {
+            // Check for duplicate mobile before allowing change
+            if (userRepository.existsByMobileNumber(patientDto.getMobileNumber())) {
+                throw new AppException("This mobile number is already registered", HttpStatus.CONFLICT);
+            }
+            user.setMobileNumber(patientDto.getMobileNumber());
+            userChanged = true;
+        }
+        if (userChanged) {
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(user);
+        }
+
+        // ── Update Patient-specific fields ───────────────────────────────
         if (patientDto.getPatientId() != null) {
             patient.setPatientId(patientDto.getPatientId());
         }

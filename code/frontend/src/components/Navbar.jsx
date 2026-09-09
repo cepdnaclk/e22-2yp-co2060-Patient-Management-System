@@ -33,7 +33,7 @@ const Navbar = () => {
   const getHomeLink = () => {
     if (isLoggedIn) {
       if (isAdmin) return "/dashboard/admin";
-      if (isNurse) return "/dashboard/doctor";
+      if (isNurse) return "/dashboard/nurse";
       if (isDoctor) return "/dashboard/doctor";
       if (isPatient) return "/dashboard/patient";
     }
