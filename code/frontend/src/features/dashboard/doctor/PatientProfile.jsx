@@ -9,8 +9,6 @@ import { useAuth } from "../../auth/AuthContext";
 import { Card, CardContent } from "../../../components/ui/Card.jsx";
 import { Badge } from "../../../components/ui/Badge.jsx";
 import { Activity, Droplet, Ruler, Weight, AlertTriangle } from "lucide-react";
-import PatientVitalsCard from "../NurseDashboardComponents/PatientVitalsCard.jsx";
-import MARCard from "../NurseDashboardComponents/MARCard.jsx";
 
 export default function PatientProfile({ onUpdate, initialPatient }) {
   const { user, isNurse } = useAuth();
@@ -26,6 +24,18 @@ export default function PatientProfile({ onUpdate, initialPatient }) {
   const [labTestNotes, setLabTestNotes] = useState("");
   const [labAttachment, setLabAttachment] = useState(null);
   const [uploadingFile, setUploadingFile] = useState(false);
+
+  const [isEditingVitals, setIsEditingVitals] = useState(false);
+  const [editedVitals, setEditedVitals] = useState({
+    bloodPressure: "",
+    heartRate: "",
+    temperature: "",
+    oxygenSaturation: "",
+    height: "",
+    weight: "",
+    allergies: "",
+  });
+  const [savingVitals, setSavingVitals] = useState(false);
 
   // Auto-select a patient when navigated from the critical alerts panel
   useEffect(() => {
@@ -105,6 +115,22 @@ export default function PatientProfile({ onUpdate, initialPatient }) {
       }
     } catch (error) {
       alert("Failed to update critical status.");
+    }
+  };
+
+  const handleSaveVitals = async () => {
+    setSavingVitals(true);
+    try {
+      const updatedPatient = await patientRecordService.updatePatientVitals(
+        selectedPatient.id,
+        editedVitals
+      );
+      setSelectedPatient(updatedPatient);
+      setIsEditingVitals(false);
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to update vitals.");
+    } finally {
+      setSavingVitals(false);
     }
   };
 
@@ -227,75 +253,120 @@ export default function PatientProfile({ onUpdate, initialPatient }) {
                   <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl flex items-center gap-2">
                     <Droplet className="w-4 h-4 text-red-300" /> Blood: <span className="font-semibold">{selectedPatient.bloodGroup || "N/A"}</span>
                   </div>
-                  <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl flex items-center gap-2">
-                    <Ruler className="w-4 h-4 text-blue-200" /> Height: <span className="font-semibold">{selectedPatient.height ? `${selectedPatient.height} cm` : "N/A"}</span>
-                  </div>
-                  <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl flex items-center gap-2">
-                    <Weight className="w-4 h-4 text-emerald-200" /> Weight: <span className="font-semibold">{selectedPatient.weight ? `${selectedPatient.weight} kg` : "N/A"}</span>
-                  </div>
+                  
+                  {!isNurse && (
+                    <button
+                      onClick={() => setShowLabModal(true)}
+                      className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 px-4 py-2 rounded-xl flex items-center gap-2 transition-all font-semibold"
+                    >
+                      <Activity className="w-4 h-4" />
+                      Order Lab Test
+                    </button>
+                  )}
                 </div>
               </div>
 
-              {selectedPatient.allergies && (
-                <div className="absolute bottom-4 right-6 text-sm bg-red-500/20 backdrop-blur-md border border-red-400/30 text-white px-4 py-2 rounded-xl flex items-center gap-2 z-10">
-                  <span className="font-semibold">Allergies:</span> {selectedPatient.allergies}
+              <div className="flex-1 lg:flex-none w-full lg:w-[480px] bg-white/10 rounded-2xl p-4 sm:p-5 mt-4 sm:mt-0 relative backdrop-blur-sm border border-white/10 shadow-inner z-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-semibold text-blue-50 text-sm tracking-wide uppercase">Patient Vitals & Info</h3>
+                  {!isEditingVitals ? (
+                    <button
+                      onClick={() => {
+                        setEditedVitals({
+                          bloodPressure: selectedPatient.bloodPressure || "",
+                          heartRate: selectedPatient.heartRate || "",
+                          temperature: selectedPatient.temperature || "",
+                          oxygenSaturation: selectedPatient.oxygenSaturation || "",
+                          height: selectedPatient.height || "",
+                          weight: selectedPatient.weight || "",
+                          allergies: selectedPatient.allergies || ""
+                        });
+                        setIsEditingVitals(true);
+                      }}
+                      className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full transition font-medium text-white"
+                    >
+                      Edit
+                    </button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button onClick={() => setIsEditingVitals(false)} className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition text-white">Cancel</button>
+                      <button onClick={handleSaveVitals} disabled={savingVitals} className="text-xs bg-emerald-500 hover:bg-emerald-600 px-4 py-1.5 rounded-full transition font-bold text-white shadow-lg shadow-emerald-500/20">{savingVitals ? "Saving..." : "Save"}</button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-8 space-y-6">
-                <div className="h-[600px]">
-                  <PatientRecordList records={records} loading={loadingRecords} />
-                </div>
-                {!isNurse && (
-                  <div id="prescription-section">
-                    <New_Prescription
-                      patientName={selectedPatient.name}
-                      patientId={selectedPatient.displayId || selectedPatient.patientId}
-                      onSavePrescription={handleSavePrescription}
-                      saving={savingPrescription}
-                    />
+                {!isEditingVitals ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-5 gap-x-4 text-sm">
+                    <div><span className="text-blue-200/80 text-[11px] uppercase tracking-wider block mb-0.5">BP</span><span className="font-semibold text-base">{selectedPatient.bloodPressure || "N/A"}</span></div>
+                    <div><span className="text-blue-200/80 text-[11px] uppercase tracking-wider block mb-0.5">HR</span><span className="font-semibold text-base">{selectedPatient.heartRate ? `${selectedPatient.heartRate} bpm` : "N/A"}</span></div>
+                    <div><span className="text-blue-200/80 text-[11px] uppercase tracking-wider block mb-0.5">Temp</span><span className="font-semibold text-base">{selectedPatient.temperature ? `${selectedPatient.temperature} °C` : "N/A"}</span></div>
+                    <div><span className="text-blue-200/80 text-[11px] uppercase tracking-wider block mb-0.5">O2 Sat</span><span className="font-semibold text-base">{selectedPatient.oxygenSaturation ? `${selectedPatient.oxygenSaturation}%` : "N/A"}</span></div>
+                    <div><span className="text-blue-200/80 text-[11px] uppercase tracking-wider block mb-0.5">Height</span><span className="font-semibold text-base">{selectedPatient.height ? `${selectedPatient.height} cm` : "N/A"}</span></div>
+                    <div><span className="text-blue-200/80 text-[11px] uppercase tracking-wider block mb-0.5">Weight</span><span className="font-semibold text-base">{selectedPatient.weight ? `${selectedPatient.weight} kg` : "N/A"}</span></div>
+                    <div className="col-span-2"><span className="text-blue-200/80 text-[11px] uppercase tracking-wider block mb-0.5">Allergies</span><span className="font-semibold text-base text-red-200">{selectedPatient.allergies || "None"}</span></div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-3 gap-x-3 text-sm">
+                    <div>
+                      <span className="text-blue-200/80 text-[10px] uppercase tracking-wider block mb-1">BP</span>
+                      <input type="text" value={editedVitals.bloodPressure} onChange={e => setEditedVitals({ ...editedVitals, bloodPressure: e.target.value })} className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition" placeholder="120/80" />
+                    </div>
+                    <div>
+                      <span className="text-blue-200/80 text-[10px] uppercase tracking-wider block mb-1">HR (bpm)</span>
+                      <input type="number" value={editedVitals.heartRate} onChange={e => setEditedVitals({ ...editedVitals, heartRate: e.target.value })} className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition" placeholder="80" />
+                    </div>
+                    <div>
+                      <span className="text-blue-200/80 text-[10px] uppercase tracking-wider block mb-1">Temp (°C)</span>
+                      <input type="number" step="0.1" value={editedVitals.temperature} onChange={e => setEditedVitals({ ...editedVitals, temperature: e.target.value })} className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition" placeholder="37.0" />
+                    </div>
+                    <div>
+                      <span className="text-blue-200/80 text-[10px] uppercase tracking-wider block mb-1">O2 Sat (%)</span>
+                      <input type="number" value={editedVitals.oxygenSaturation} onChange={e => setEditedVitals({ ...editedVitals, oxygenSaturation: e.target.value })} className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition" placeholder="98" />
+                    </div>
+                    <div>
+                      <span className="text-blue-200/80 text-[10px] uppercase tracking-wider block mb-1">Height (cm)</span>
+                      <input type="number" value={editedVitals.height} onChange={e => setEditedVitals({ ...editedVitals, height: e.target.value })} className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition" placeholder="170" />
+                    </div>
+                    <div>
+                      <span className="text-blue-200/80 text-[10px] uppercase tracking-wider block mb-1">Weight (kg)</span>
+                      <input type="number" value={editedVitals.weight} onChange={e => setEditedVitals({ ...editedVitals, weight: e.target.value })} className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition" placeholder="70" />
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-blue-200/80 text-[10px] uppercase tracking-wider block mb-1">Allergies</span>
+                      <input type="text" value={editedVitals.allergies} onChange={e => setEditedVitals({ ...editedVitals, allergies: e.target.value })} className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition" placeholder="Peanuts, Penicillin" />
+                    </div>
                   </div>
                 )}
               </div>
-              <div className="lg:col-span-4 space-y-6">
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-7 space-y-6">
+                <div className="h-[600px]">
+                  <PatientRecordList records={records} loading={loadingRecords} />
+                </div>
+              </div>
+              <div className="lg:col-span-5 space-y-6">
                 <MedicalRecordForm
                   patient={selectedPatient}
                   onSaveRecord={handleSaveRecord}
                   doctorName={doctorName}
                   isNurse={isNurse}
                 />
-                {!isNurse && (
-                  <Card className="border-none shadow-md shadow-slate-200/50">
-                    <CardContent className="p-6">
-                      <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <Activity className="w-5 h-5 text-blue-600" /> Quick Actions
-                      </h3>
-                      <div className="space-y-3">
-                        <button
-                          onClick={() => document.getElementById("prescription-section")?.scrollIntoView({ behavior: "smooth" })}
-                          className="w-full bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-700 py-3 rounded-xl font-medium transition-colors"
-                        >
-                          Write Prescription
-                        </button>
-                        <button
-                          onClick={() => setShowLabModal(true)}
-                          className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 py-3 rounded-xl font-medium transition-colors"
-                        >
-                          Order Lab Test
-                        </button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <PatientVitalsCard patient={selectedPatient} />
-              <MARCard patient={selectedPatient} />
-            </div>
+            {!isNurse && (
+              <div id="prescription-section" className="w-full mt-6">
+                <New_Prescription
+                  patientName={selectedPatient.name}
+                  patientId={selectedPatient.displayId || selectedPatient.patientId}
+                  onSavePrescription={handleSavePrescription}
+                  saving={savingPrescription}
+                />
+              </div>
+            )}
           </div>
         )}
 
