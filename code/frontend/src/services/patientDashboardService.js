@@ -215,4 +215,14 @@ export const patientDashboardService = {
     const response = await api.put(`/api/patients/${id}`, payload);
     return response.data;
   },
+
+  async bookAppointment(payload) {
+    const response = await api.post("/api/appointments", payload);
+    return response.data;
+  },
+
+  async getDoctors() {
+    const response = await api.get("/api/doctors");
+    return response.data || [];
+  },
 };

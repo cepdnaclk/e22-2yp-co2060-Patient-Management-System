@@ -18,7 +18,8 @@ export default function AssignedPatientsList({ patients, selectedPatient, onSele
             placeholder="Search patients..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+            style={{ color: "#000000" }}
+            className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all font-medium"
           />
         </div>
         <div className="flex items-center justify-between text-xs font-semibold text-slate-500 uppercase tracking-wider px-1">

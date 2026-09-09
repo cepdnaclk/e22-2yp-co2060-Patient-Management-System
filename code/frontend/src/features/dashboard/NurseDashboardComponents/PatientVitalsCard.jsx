@@ -144,27 +144,27 @@ export default function PatientVitalsCard({ patient }) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Blood Pressure (mmHg)</label>
-                  <input required type="text" placeholder="120/80" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  <input required type="text" placeholder="120/80" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
                     value={formData.bloodPressure} onChange={e => setFormData({...formData, bloodPressure: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Heart Rate (bpm)</label>
-                  <input required type="number" placeholder="72" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  <input required type="number" placeholder="72" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
                     value={formData.heartRate} onChange={e => setFormData({...formData, heartRate: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Temperature (°F)</label>
-                  <input required type="number" step="0.1" placeholder="98.6" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  <input required type="number" step="0.1" placeholder="98.6" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
                     value={formData.temperature} onChange={e => setFormData({...formData, temperature: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">SpO2 (%)</label>
-                  <input required type="number" placeholder="98" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  <input required type="number" placeholder="98" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
                     value={formData.oxygenSaturation} onChange={e => setFormData({...formData, oxygenSaturation: e.target.value})} />
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Respiratory Rate (bpm)</label>
-                  <input required type="number" placeholder="16" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  <input required type="number" placeholder="16" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
                     value={formData.respiratoryRate} onChange={e => setFormData({...formData, respiratoryRate: e.target.value})} />
                 </div>
               </div>

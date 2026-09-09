@@ -85,7 +85,7 @@ export default function PatientSearch({ onSelectPatient }) {
             setQuery(e.target.value);
             setIsOpen(true);
           }}
-          className="w-full bg-white border border-slate-200 rounded-full py-4 pl-12 pr-12 text-sm outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all placeholder:text-slate-400 shadow-sm"
+          className="w-full bg-white border border-slate-200 rounded-full py-4 pl-12 pr-12 text-sm text-slate-900 font-medium outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all placeholder:text-slate-400 shadow-sm"
         />
         {loading && (
           <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-600 animate-spin" />
@@ -134,7 +134,12 @@ export default function PatientSearch({ onSelectPatient }) {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-3 sm:mt-0 sm:ml-4 self-end sm:self-auto flex items-center gap-3">
+                    <div className="mt-3 sm:mt-0 sm:ml-4 self-end sm:self-auto flex items-center gap-2">
+                      {patient.criticalStatus && (
+                        <Badge variant="danger" className="bg-red-100 text-red-700 border-red-200">
+                          Critical
+                        </Badge>
+                      )}
                       {patient.admissionStatus === "ADMITTED" && (
                         <Badge variant="warning">In-Patient</Badge>
                       )}

@@ -265,7 +265,7 @@ const DoctorDashboard = () => {
         </header>
 
         {/* Dynamic Content */}
-        <div className="p-4 sm:p-6 lg:p-8 w-full max-w-7xl mx-auto">
+        <div className="p-4 sm:p-6 lg:p-8 w-full max-w-[1700px] mx-auto">
           {section === "dashboard" && (
             <DoctorOverview
               stats={stats}
