@@ -133,15 +133,15 @@ const PatientProfile = () => {
         records.length
           ? records
           : [
-              {
-                id: Date.now(),
-                date: "N/A",
-                type: "Record",
-                title: "No records found",
-                description: "This patient has no medical records yet.",
-                doctor: "System",
-              },
-            ],
+            {
+              id: Date.now(),
+              date: "N/A",
+              type: "Record",
+              title: "No records found",
+              description: "This patient has no medical records yet.",
+              doctor: "System",
+            },
+          ],
       );
     } catch (error) {
       setHistoryRecords([

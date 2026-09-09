@@ -59,39 +59,6 @@ const features = [
   },
 ];
 
-const testimonials = [
-  {
-    quote:
-      "PatientMS transformed our clinic workflow. Appointment times dropped by 40% in the first month.",
-    author: "Dr. Nimal Perera",
-    role: "Chief Medical Officer",
-    initials: "NP",
-    color: "bg-blue-600",
-  },
-  {
-    quote:
-      "The pharmacy module alone saved us hours every day. Outstanding system.",
-    author: "Priya Jayawardena",
-    role: "Head Pharmacist",
-    initials: "PJ",
-    color: "bg-emerald-600",
-  },
-  {
-    quote:
-      "Finally, a system that our entire team — from admin to doctors — actually enjoys using.",
-    author: "Kumari Silva",
-    role: "Hospital Administrator",
-    initials: "KS",
-    color: "bg-violet-600",
-  },
-];
-
-const stats = [
-  { value: "10,000+", label: "Patients managed" },
-  { value: "", label: "Clinicians onboard" },
-  { value: "99.9%", label: "System uptime" },
-  { value: "< 2s", label: "Average load time" },
-];
 
 /* ─── Component ─────────────────────────────────────────────────── */
 const Home = () => {
@@ -153,17 +120,6 @@ const Home = () => {
             </NavLink>
           </div>
 
-          {/* Trust strip */}
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500 dark:text-slate-500 font-medium">
-            {["No credit card required", "HIPAA compliant", "24/7 support"].map(
-              (t) => (
-                <span key={t} className="flex items-center gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  {t}
-                </span>
-              ),
-            )}
-          </div>
         </div>
 
         {/* ── Hero mockup image (NO rotation, flat display) ── */}
@@ -201,21 +157,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── Stats ─────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map(({ value, label }) => (
-            <div key={label} className="text-center">
-              <p className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-                {value}
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
       {/* ── Features ──────────────────────────────────────────────── */}
       <section className="py-24 px-4">
         <div className="max-w-6xl mx-auto">
@@ -255,55 +196,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── Testimonials ──────────────────────────────────────────── */}
-      <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900/60">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3">
-              Testimonials
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-              Trusted by healthcare professionals
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map(({ quote, author, role, initials, color }) => (
-              <div
-                key={author}
-                className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"
-              >
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 text-amber-400 fill-amber-400"
-                    />
-                  ))}
-                </div>
-                <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-5">
-                  "{quote}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-9 h-9 rounded-full ${color} flex items-center justify-center text-white text-sm font-bold shrink-0`}
-                  >
-                    {initials}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                      {author}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {role}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA Banner ────────────────────────────────────────────── */}
       <section className="py-24 px-4">
