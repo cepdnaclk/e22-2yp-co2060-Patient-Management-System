@@ -9,7 +9,7 @@ import {
   LayoutDashboard, UserCircle, FileText, Pill,
   Menu, X, Activity, Droplet, Ruler, Weight, Calendar, Clock, ChevronRight,
   CreditCard, CheckCircle2, AlertCircle, Receipt, Sun, Moon, LogOut,
-  FileIcon, FileImage, FlaskConical, Hourglass
+  FileIcon, FileImage, FlaskConical, Hourglass, Plus
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { fileUploadService } from "../../services/fileUploadService";
@@ -51,6 +51,79 @@ const PatientDashboard = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({});
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+  // Booking Modal State
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [doctorsList, setDoctorsList] = useState([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [bookingForm, setBookingForm] = useState({
+    doctorId: "",
+    date: "",
+    time: "",
+    reason: "General Checkup",
+  });
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingError, setBookingError] = useState("");
+  const [bookingSuccess, setBookingSuccess] = useState("");
+
+  const openBookingModal = async () => {
+    setIsBookingModalOpen(true);
+    setBookingError("");
+    setBookingSuccess("");
+    if (doctorsList.length === 0) {
+      setLoadingDoctors(true);
+      try {
+        const docs = await patientDashboardService.getDoctors();
+        setDoctorsList(docs);
+        if (docs.length > 0) {
+          setBookingForm((prev) => ({ ...prev, doctorId: String(docs[0].id) }));
+        }
+      } catch (err) {
+        console.error("Failed to load doctors list", err);
+      } finally {
+        setLoadingDoctors(false);
+      }
+    }
+  };
+
+  const handleBookAppointment = async (e) => {
+    e.preventDefault();
+    if (!bookingForm.doctorId || !bookingForm.date || !bookingForm.time) {
+      setBookingError("Please select doctor, appointment date, and time.");
+      return;
+    }
+    setIsBooking(true);
+    setBookingError("");
+    try {
+      await patientDashboardService.bookAppointment({
+        patientId: patient?.id,
+        doctorId: Number(bookingForm.doctorId),
+        appointmentDateTime: `${bookingForm.date}T${bookingForm.time}:00`,
+        durationMinutes: 30,
+        reason: bookingForm.reason || "General Checkup",
+        status: "SCHEDULED"
+      });
+      setBookingSuccess("Appointment booked successfully!");
+      // Refresh dashboard data to update upcoming appointments count and list
+      const data = await patientDashboardService.getDashboardData(user);
+      setAppointments(data.appointments);
+      setStats(data.stats);
+      setTimeout(() => {
+        setIsBookingModalOpen(false);
+        setBookingSuccess("");
+        setBookingForm({
+          doctorId: doctorsList[0]?.id ? String(doctorsList[0].id) : "",
+          date: "",
+          time: "",
+          reason: "General Checkup",
+        });
+      }, 1200);
+    } catch (err) {
+      setBookingError(err?.response?.data?.message || "Failed to book appointment. Please try again.");
+    } finally {
+      setIsBooking(false);
+    }
+  };
 
   const parseDateForInput = (dateStr) => {
     if (!dateStr || dateStr === "N/A") return "";
@@ -678,11 +751,18 @@ const PatientDashboard = () => {
 
   const renderAppointmentsSection = () => (
     <div className="space-y-6 animate-in slide-in-from-bottom-4 fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Appointments</h1>
           <p className="text-sm text-slate-500 mt-1">Manage and view your upcoming and past doctor visits.</p>
         </div>
+        <button
+          onClick={openBookingModal}
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/20 transition-all self-start sm:self-auto cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          Book Appointment
+        </button>
       </div>
 
       <Card className="border-none shadow-md shadow-slate-200/50">
@@ -983,6 +1063,118 @@ const PatientDashboard = () => {
           {section === "appointments" && renderAppointmentsSection()}
           {section === "billing" && renderBillingSection()}
         </div>
+
+        {/* Book Appointment Modal */}
+        {isBookingModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div>
+                  <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                    Book Doctor Appointment
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">Schedule a consultation with hospital doctors</p>
+                </div>
+                <button
+                  onClick={() => setIsBookingModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleBookAppointment} className="p-6 flex flex-col gap-4">
+                {bookingError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
+                    {bookingError}
+                  </div>
+                )}
+                {bookingSuccess && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700 font-bold flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    {bookingSuccess}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Select Doctor</label>
+                  {loadingDoctors ? (
+                    <div className="py-2 text-xs text-slate-400">Loading available doctors...</div>
+                  ) : doctorsList.length === 0 ? (
+                    <div className="py-2 text-xs text-amber-600">No doctors currently available</div>
+                  ) : (
+                    <select
+                      required
+                      value={bookingForm.doctorId}
+                      onChange={(e) => setBookingForm({ ...bookingForm, doctorId: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {doctorsList.map((doc) => (
+                        <option key={doc.id} value={doc.id}>
+                          Dr. {doc.firstName || ""} {doc.lastName || ""} {doc.specialization ? `(${doc.specialization})` : ""}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Date</label>
+                    <input
+                      required
+                      type="date"
+                      min={new Date().toISOString().split("T")[0]}
+                      value={bookingForm.date}
+                      onChange={(e) => setBookingForm({ ...bookingForm, date: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Time</label>
+                    <input
+                      required
+                      type="time"
+                      value={bookingForm.time}
+                      onChange={(e) => setBookingForm({ ...bookingForm, time: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Reason for Visit</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="e.g. Fever, Follow-up consultation, Routine checkup"
+                    value={bookingForm.reason}
+                    onChange={(e) => setBookingForm({ ...bookingForm, reason: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div className="mt-3 flex justify-end gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setIsBookingModalOpen(false)}
+                    className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isBooking || Boolean(bookingSuccess)}
+                    className="px-5 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl transition-all shadow-md shadow-blue-500/20 active:scale-95"
+                  >
+                    {isBooking ? "Booking..." : "Confirm Booking"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

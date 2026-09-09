@@ -130,14 +130,69 @@ html.dark .glass-panel {
 	animation: float-orb 16s ease-in-out infinite reverse;
 }
 
-.ring {
+/* Base text color for all form controls in light mode */
+input, textarea, select {
+	color: #0f172a;
+}
+
+/* In dark mode: form controls styled for dark backgrounds MUST have crisp white text */
+html.dark input.dark\:text-white,
+html.dark textarea.dark\:text-white,
+html.dark select.dark\:text-white,
+html.dark input[class*="dark:text-white"],
+html.dark textarea[class*="dark:text-white"],
+html.dark select[class*="dark:text-white"],
+html.dark input[class*="dark:text-slate-100"],
+html.dark textarea[class*="dark:text-slate-100"],
+html.dark input[class*="dark:text-slate-200"],
+html.dark textarea[class*="dark:text-slate-200"],
+html.dark input[class*="dark:bg-slate-900"],
+html.dark textarea[class*="dark:bg-slate-900"],
+html.dark select[class*="dark:bg-slate-900"],
+html.dark input[class*="dark:bg-slate-800"],
+html.dark textarea[class*="dark:bg-slate-800"],
+html.dark select[class*="dark:bg-slate-800"],
+html.dark input[class*="dark:bg-slate-950"],
+html.dark textarea[class*="dark:bg-slate-950"],
+html.dark select[class*="dark:bg-slate-950"] {
+	color: #f8fafc !important;
+}
+
+/* In dark mode: form controls without dark background styles (e.g. inside light cards, modals, or nurse dashboard) stay crisp dark */
+html.dark input:not([class*="dark:bg-"]):not([class*="dark:text-white"]):not([class*="dark:text-slate"]):not([class*="dark:text-gray"]),
+html.dark textarea:not([class*="dark:bg-"]):not([class*="dark:text-white"]):not([class*="dark:text-slate"]):not([class*="dark:text-gray"]),
+html.dark select:not([class*="dark:bg-"]):not([class*="dark:text-white"]):not([class*="dark:text-slate"]):not([class*="dark:text-gray"]) {
+	color: #0f172a !important;
+}
+
+/* Browser autofill text color fix for dark mode */
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover, 
+html.dark input:-webkit-autofill:focus {
+	-webkit-text-fill-color: #f8fafc !important;
+	-webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Base placeholder styles */
+input::placeholder,
+textarea::placeholder {
+	color: #94a3b8;
+}
+
+html.dark input[class*="dark:bg-"]::placeholder,
+html.dark textarea[class*="dark:bg-"]::placeholder {
+	color: #64748b;
+}
+
+.ambient-ring {
 	position: absolute;
 	border-radius: 9999px;
 	border: 2px solid rgba(59, 130, 246, 0.2);
 	box-shadow: 0 0 30px rgba(59, 130, 246, 0.08);
 }
 
-.ring-1 {
+.ambient-ring-1 {
 	width: 420px;
 	height: 420px;
 	top: 24%;
@@ -145,7 +200,7 @@ html.dark .glass-panel {
 	animation: spin-orb 26s linear infinite;
 }
 
-.ring-2 {
+.ambient-ring-2 {
 	width: 260px;
 	height: 260px;
 	bottom: 8%;
@@ -196,12 +251,12 @@ html.dark .glass-panel {
 		height: 220px;
 	}
 
-	.ring-1 {
+	.ambient-ring-1 {
 		width: 280px;
 		height: 280px;
 	}
 
-	.ring-2 {
+	.ambient-ring-2 {
 		width: 200px;
 		height: 200px;
 	}

@@ -2,28 +2,23 @@ import React, { useState } from "react";
 import { useAuth } from "../auth/AuthContext.jsx";
 import { useTheme } from "../theme/ThemeContext.jsx";
 import {
-  LayoutDashboard, UserPlus, Calendar, CreditCard,
-  Menu, X, Building, LogOut, Sun, Moon
+  CreditCard, PlusCircle, Menu, X, LogOut
 } from "lucide-react";
-
-import ReceptionistOverview from "./receptionist/ReceptionistOverview.jsx";
-import PatientRegistration from "./receptionist/PatientRegistration.jsx";
-import AppointmentScheduling from "./receptionist/AppointmentScheduling.jsx";
-import BillingOverview from "./receptionist/BillingOverview.jsx";
 import { useNavigate } from "react-router-dom";
 
+import BillingOverview from "./receptionist/BillingOverview.jsx";
+import CreateInvoice from "./receptionist/CreateInvoice.jsx";
+
 const sectionLabels = {
-  overview: "Overview",
-  register: "Patient Registration",
-  appointments: "Scheduling",
-  billing: "Billing & Invoicing",
+  billing: "Billing & Invoices",
+  create: "Generate Invoice",
 };
 
-const ReceptionistDashboard = () => {
+export default function BillingStaffDashboard() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const [section, setSection] = useState("overview");
+  const [section, setSection] = useState("billing");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -32,10 +27,8 @@ const ReceptionistDashboard = () => {
   };
 
   const menuItems = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard },
-    { id: "register", label: "Patient Registration", icon: UserPlus },
-    { id: "appointments", label: "Scheduling", icon: Calendar },
-    { id: "billing", label: "Billing & Invoicing", icon: CreditCard },
+    { id: "billing", label: "Billing & Invoices", icon: CreditCard },
+    { id: "create", label: "Create Invoice", icon: PlusCircle },
   ];
 
   return (
@@ -56,10 +49,10 @@ const ReceptionistDashboard = () => {
       `}>
         <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center shadow-lg shadow-sky-500/20">
-              <Building className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <CreditCard className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-white tracking-tight">Front<span className="text-sky-400">Desk</span></span>
+            <span className="font-bold text-xl text-white tracking-tight">Billing<span className="text-emerald-400">Hub</span></span>
           </div>
           <div className="flex items-center gap-1">
             <button className="lg:hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors" onClick={() => setIsSidebarOpen(false)}>
@@ -70,7 +63,7 @@ const ReceptionistDashboard = () => {
 
         <div className="p-6 flex-1 overflow-y-auto">
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">Front Desk Tools</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">Revenue & Billing</p>
             {menuItems.map((item) => {
               const active = section === item.id;
               const Icon = item.icon;
@@ -81,10 +74,11 @@ const ReceptionistDashboard = () => {
                     setSection(item.id);
                     setIsSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl font-medium transition-all ${active
-                      ? "bg-sky-500 text-white shadow-md shadow-sky-500/20"
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl font-medium transition-all ${
+                    active
+                      ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
                       : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                    }`}
+                  }`}
                 >
                   <Icon className={`w-5 h-5 ${active ? "text-white" : "text-slate-400"}`} />
                   {item.label}
@@ -94,13 +88,14 @@ const ReceptionistDashboard = () => {
           </div>
         </div>
 
+        {/* User Footer */}
         <div className="p-6 border-t border-slate-800 bg-slate-950">
           <div className="bg-slate-800 rounded-xl p-4 flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400 font-bold border border-sky-500/30">
-              {user?.email?.charAt(0).toUpperCase() || "R"}
+            <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold border border-emerald-500/30">
+              {user?.email?.charAt(0).toUpperCase() || "B"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">Receptionist</p>
+              <p className="text-sm font-semibold text-white truncate">Billing Staff</p>
               <p className="text-xs text-slate-400 truncate">{user?.email}</p>
             </div>
           </div>
@@ -116,7 +111,7 @@ const ReceptionistDashboard = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
-        {/* Top Bar (all screen sizes) */}
+        {/* Top Bar */}
         <header className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-30">
           {/* Left */}
           <div className="flex items-center gap-3">
@@ -127,10 +122,10 @@ const ReceptionistDashboard = () => {
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex items-center gap-2 lg:hidden">
-              <div className="w-7 h-7 bg-sky-600 rounded-md flex items-center justify-center">
-                <Building className="w-4 h-4 text-white" />
+              <div className="w-7 h-7 bg-emerald-600 rounded-md flex items-center justify-center">
+                <CreditCard className="w-4 h-4 text-white" />
               </div>
-              <span className="font-bold text-slate-900">Front<span className="text-sky-600">Desk</span></span>
+              <span className="font-bold text-slate-900">Billing<span className="text-emerald-600">Hub</span></span>
             </div>
             <div className="hidden lg:block">
               <span className="font-semibold text-slate-900 text-sm">{sectionLabels[section] || section}</span>
@@ -139,11 +134,11 @@ const ReceptionistDashboard = () => {
           {/* Right */}
           <div className="flex items-center gap-2">
             <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-200 ml-1">
-              <div className="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold text-sm">
-                {user?.email?.charAt(0).toUpperCase() || "R"}
+              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm">
+                {user?.email?.charAt(0).toUpperCase() || "B"}
               </div>
               <div className="hidden md:block">
-                <p className="text-sm font-semibold text-slate-900 leading-tight">Receptionist</p>
+                <p className="text-sm font-semibold text-slate-900 leading-tight">Billing Department</p>
                 <p className="text-xs text-slate-500 leading-tight">{user?.email}</p>
               </div>
             </div>
@@ -160,14 +155,10 @@ const ReceptionistDashboard = () => {
 
         {/* Dynamic Content */}
         <div className="p-4 sm:p-6 lg:p-8 w-full max-w-7xl mx-auto">
-          {section === "overview" && <ReceptionistOverview setActiveSection={setSection} />}
-          {section === "register" && <PatientRegistration />}
-          {section === "appointments" && <AppointmentScheduling />}
           {section === "billing" && <BillingOverview />}
+          {section === "create" && <CreateInvoice onBack={() => setSection("billing")} />}
         </div>
       </main>
     </div>
   );
-};
-
-export default ReceptionistDashboard;
+}

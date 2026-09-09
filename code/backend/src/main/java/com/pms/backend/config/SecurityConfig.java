@@ -77,7 +77,7 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "SUPER_ADMIN")
 
                     .requestMatchers("/api/users/**")
-                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "DOCTOR")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "MANAGEMENT", "DOCTOR")
 
                     // File downloads — publicly accessible so embedded images/PDFs render
                     .requestMatchers("/api/files/**")

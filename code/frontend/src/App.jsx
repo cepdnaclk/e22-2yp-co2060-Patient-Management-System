@@ -16,6 +16,7 @@ import ReceptionistDashboard from "./features/dashboard/ReceptionistDashboard.js
 import PharmacistDashboard from "./features/dashboard/PharmacistDashboard.jsx";
 import LabTechnicianDashboard from "./features/dashboard/LabTechnicianDashboard.jsx";
 import ManagementDashboard from "./features/dashboard/ManagementDashboard.jsx";
+import BillingStaffDashboard from "./features/dashboard/BillingStaffDashboard.jsx";
 import AmbientOrbs from "./components/AmbientOrbs.jsx";
 import NavbarLanding from "./components/NavbarLanding.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -119,6 +120,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={["LAB_TECHNICIAN", "ADMIN", "SUPER_ADMIN"]}>
                   <LabTechnicianDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/billingstaff"
+              element={
+                <ProtectedRoute allowedRoles={["BILLING_STAFF", "ADMIN", "SUPER_ADMIN"]}>
+                  <BillingStaffDashboard />
                 </ProtectedRoute>
               }
             />

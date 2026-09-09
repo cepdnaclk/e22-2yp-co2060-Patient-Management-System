@@ -298,6 +298,32 @@ export default function DoctorOverview({
         </div>
       )}
 
+      {/* ── Critical Patients Notification Banner ── */}
+      {!isNurse && criticalPatients.length > 0 && (
+        <div className="p-4 rounded-xl bg-red-50 border-2 border-red-300 flex items-center gap-4 animate-pulse">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-bold text-red-900">
+              ⚠ {criticalPatients.length} Critical Patient{criticalPatients.length > 1 ? "s" : ""} Require Attention
+            </p>
+            <p className="text-xs text-red-700 mt-0.5">
+              {criticalPatients.map(p => 
+                `${p.firstName || ""} ${p.lastName || ""}`.trim() || "Unknown"
+              ).join(", ")}
+              {" — "}urgent clinical attention required
+            </p>
+          </div>
+          <button
+            onClick={() => togglePanel("critical")}
+            className="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition-colors shrink-0"
+          >
+            View Details
+          </button>
+        </div>
+      )}
+
       {/* ── Stat Cards ── */}
       <div className={`grid grid-cols-1 sm:grid-cols-2 ${isNurse ? 'lg:grid-cols-3' : 'lg:grid-cols-5'} gap-4`}>
         {(isNurse ? filteredStatCards : statCards).map((card) => {
@@ -413,11 +439,27 @@ export default function DoctorOverview({
                           {formatTime(apt.appointmentDateTime)}
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
+                          <div
+                            className="flex items-center gap-3 cursor-pointer group/patient"
+                            onClick={() => {
+                              const foundPatient = allPatients?.find((p) => p.id === apt.patientId);
+                              onNavigate?.("records", foundPatient || { id: apt.patientId, name: apt.patientName });
+                            }}
+                            title="Click to view patient profile & mark critical"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-xs font-bold group-hover/patient:scale-105 transition-transform">
                               {apt.patientName ? apt.patientName.charAt(0).toUpperCase() : "?"}
                             </div>
-                            <span className="font-medium text-slate-700">{apt.patientName || "Unknown"}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-slate-700 group-hover/patient:text-violet-600 transition-colors">
+                                {apt.patientName || "Unknown"}
+                              </span>
+                              {allPatients?.find((p) => p.id === apt.patientId)?.criticalStatus && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 font-bold border border-red-200">
+                                  CRITICAL
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="text-slate-500 max-w-[200px] truncate">

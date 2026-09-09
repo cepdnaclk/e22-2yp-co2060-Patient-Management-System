@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service
@@ -154,14 +156,32 @@ public class NurseService {
     }
 
     private MedicationOrderDto mapToMedOrderDto(MedicationOrder entity) {
-        List<MedAdministrationDto> admins = entity.getAdministrations().stream()
-                .map(this::mapToMedAdminDto).collect(Collectors.toList());
+        List<MedAdministrationDto> admins = entity.getAdministrations() != null 
+                ? entity.getAdministrations().stream().map(this::mapToMedAdminDto).collect(Collectors.toList())
+                : new ArrayList<>();
                 
-        // Calculate due time / urgency logic for frontend
+        // Calculate due time / urgency logic for frontend based on daily dose count
+        int requiredDoses = 1;
+        String freq = entity.getFrequency() != null ? entity.getFrequency().toUpperCase() : "";
+        if (freq.contains("BID") || freq.contains("TWICE")) {
+            requiredDoses = 2;
+        } else if (freq.contains("TID") || freq.contains("THREE") || freq.contains("Q8H")) {
+            requiredDoses = 3;
+        } else if (freq.contains("QID") || freq.contains("FOUR") || freq.contains("Q6H")) {
+            requiredDoses = 4;
+        }
+
+        long givenToday = admins.stream()
+                .filter(a -> a.getAdministeredAt() != null 
+                        && a.getAdministeredAt().toLocalDate().equals(LocalDateTime.now().toLocalDate()) 
+                        && "GIVEN".equalsIgnoreCase(a.getStatus()))
+                .count();
+
         String status = "pending";
-        if (admins.stream().anyMatch(a -> a.getAdministeredAt().toLocalDate().equals(LocalDateTime.now().toLocalDate()) 
-            && a.getStatus().equals("GIVEN"))) {
+        if (givenToday >= requiredDoses) {
             status = "given";
+        } else if (givenToday > 0) {
+            status = "partial";
         }
 
         return MedicationOrderDto.builder()
